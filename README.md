@@ -1,59 +1,114 @@
 # CloudScribe
 
-CloudScribe is a NODAYSIDLE macOS 14+ cloud-only speech-to-text utility. It sends live microphone audio and imported audio files to Deepgram nova-3, then shows the transcript and copies it to the clipboard.
+**Cloud-only macOS dictation powered by Deepgram nova-3.**
+
+CloudScribe gives NODAYSIDLE a fast menu-bar dictation surface for live microphone capture and audio-file transcription. It is explicit about the trust boundary: audio goes to Deepgram for speech-to-text, optional polish can touch finished text only, and API keys stay in macOS Keychain.
+
+**Version 0.3.0** · macOS 14+ · Swift 6 · SwiftUI
+
+---
+
+## What You Get
+
+| Area | Capability |
+|------|------------|
+| **Live dictation** | Record from the menu bar or floating pill and stream interim text |
+| **Audio import** | Transcribe WAV, MP3, M4A, OGG, FLAC, AAC, and WebM files |
+| **Floating pill** | Draggable always-on-top dictation control with live status |
+| **Global hotkey** | Default `⌥⇧Space`, configurable in Settings |
+| **Auto-paste** | Copies the final transcript and can paste into the frontmost app |
+| **History** | Optional local text-only transcript history, off by default |
+| **Text polish** | Optional OpenRouter polish receives text only — never audio |
+| **Privacy label** | UI states `Audio sent to cloud for transcription` clearly |
+
+---
 
 ## Privacy Boundary
-CloudScribe does **not** run local transcription models. No Whisper, MLX, Parakeet, CoreML speech, bundled model downloads, or on-device STT are used. The app clearly displays:
 
-> Audio sent to cloud for transcription
+CloudScribe is intentionally **cloud-only** for speech recognition.
 
-## Deepgram Setup
-Slice 1 uses Deepgram only.
+- Audio is sent to **Deepgram nova-3** only during an active transcription request.
+- No Whisper, MLX, CoreML speech, Parakeet, bundled model files, or local STT inference.
+- Deepgram and OpenRouter keys are stored in **macOS Keychain**, not repo files.
+- Optional OpenRouter polish receives the finished transcript text only, never audio.
+- Transcript history, when enabled, is local text storage on your Mac.
 
-Required model and params:
-- `model=nova-3`
-- `language=en`
-- `smart_format=true`
-- `punctuate=true`
-- streaming also: `interim_results=true`
+If you need fully local/offline transcription, this is not that product.
 
-The app stores the API key in macOS Keychain under `DEEPGRAM_API_KEY`. Do not put keys in repo files.
+---
 
-Development/live smoke setup:
-1. Get a Deepgram API key from NDI.
-2. Launch CloudScribe.
-3. Open Settings.
-4. Paste the key into the Deepgram key field and save.
-5. Run a short mic or file transcription smoke.
+## Quick Start
 
-## Build and Test
+1. Build and package the app:
+
+   ```bash
+   swift test
+   ./Scripts/package_app.sh
+   ```
+
+2. Install and launch:
+
+   ```bash
+   ./Scripts/install_app.sh
+   open -n /Applications/CloudScribe.app
+   ```
+
+3. Open **Settings**, save a Deepgram API key, then request microphone access.
+4. Start dictating from the floating pill, global hotkey, or menu-bar popover.
+
+Full operator guide: [USERGUIDE.md](USERGUIDE.md)
+
+---
+
+## Deepgram Configuration
+
+CloudScribe uses Deepgram nova-3 with these required settings:
+
+| Setting | Value |
+|---------|-------|
+| `model` | `nova-3` |
+| `language` | `en` |
+| `smart_format` | `true` |
+| `punctuate` | `true` |
+| `interim_results` | `true` for streaming |
+
+The app stores the key under `DEEPGRAM_API_KEY` in Keychain.
+
+---
+
+## Build From Source
+
 ```bash
+git clone https://github.com/nodaysidle/nodaysidle-cloudscribe.git
+cd nodaysidle-cloudscribe
+
 swift test
 ./Scripts/package_app.sh
 codesign --verify --deep --strict .build/release/CloudScribe.app
 ./Scripts/smoke_test.sh
 ```
 
-See [USERGUIDE.md](USERGUIDE.md) for the full user guide. [GUIDE.md](GUIDE.md) covers developer install and smoke commands.
+Developer install and smoke details: [docs/GUIDE.md](docs/GUIDE.md)
 
-## Slice 3 Features
-- Floating draggable pill UI for always-on dictation.
-- Configurable global hotkey with recorder UI.
-- Auto-paste on completion (on by default).
+---
 
-## Slice 2 Features
-- Global hotkey `⌥⇧Space` toggles recording.
-- Opt-in local transcript history (text only, off by default).
-- Optional OpenRouter text polish after transcription (off by default).
-- Recording dot on menu bar icon.
+## Repository Map
 
-## Slice 1 Features
-- Menu bar macOS utility.
-- Live mic transcription through Deepgram streaming WebSocket.
-- Audio file import/drop through Deepgram prerecorded `/v1/listen`.
-- Transcript UI, copy-to-clipboard, and low-risk paste attempt.
-- Keychain-backed API key storage.
-- Dark NODAYSIDLE UI with Volt accent `#C8FF00`.
+| Path | Purpose |
+|------|---------|
+| `Sources/CloudScribe/` | Swift app source |
+| `Tests/CloudScribeTests/` | XCTest coverage |
+| `Scripts/` | Package, install, and smoke scripts |
+| `USERGUIDE.md` | End-user operation guide |
+| `docs/GUIDE.md` | Developer install and verification notes |
+| `docs/internal/` | Planning/spec/agent notes retained for maintainers |
 
-## Out of Scope
-App Store, notarization, accounts, telemetry, cloud storage of audio, meeting library, local model downloads, Android, OpenRouter primary STT.
+---
+
+## Status
+
+CloudScribe is an internal NODAYSIDLE macOS utility. Current distribution is source/build oriented; signing and notarization depend on the active release slice.
+
+## License
+
+Proprietary — NODAYSIDLE.
