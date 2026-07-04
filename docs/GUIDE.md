@@ -7,7 +7,7 @@ CloudScribe is a NODAYSIDLE macOS 14+ menu bar speech-to-text utility. It sends 
 After packaging:
 
 ```text
-/Volumes/omarchyuser/projekti/nodaysidle-cloudscribe/.build/release/CloudScribe.app
+.build/release/CloudScribe.app
 ```
 
 Install to Applications (optional):
