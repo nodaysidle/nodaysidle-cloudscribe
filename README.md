@@ -1,3 +1,5 @@
+<img src=".github/social-preview.png" alt="CloudScribe — NODAYSIDLE" width="100%">
+
 # CloudScribe
 
 > Cloud-only macOS dictation powered by Deepgram nova-3.
