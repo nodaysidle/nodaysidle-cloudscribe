@@ -39,21 +39,25 @@ If you need fully local/offline transcription, this is not that product.
 
 ## Installation
 
-Download from [GitHub Releases](https://github.com/nodaysidle/nodaysidle-cloudscribe/releases).
-
-Verify the download:
+The latest release ([v0.1.1](https://github.com/nodaysidle/nodaysidle-cloudscribe/releases/tag/v0.1.1)) has no downloadable assets. The newest pre-built app is [`CloudScribe-v0.1.0-macos.zip`](https://github.com/nodaysidle/nodaysidle-cloudscribe/releases/download/v0.1.0/CloudScribe-v0.1.0-macos.zip) ([SHA-256](https://github.com/nodaysidle/nodaysidle-cloudscribe/releases/download/v0.1.0/CloudScribe-v0.1.0-macos.zip.sha256)) on [v0.1.0](https://github.com/nodaysidle/nodaysidle-cloudscribe/releases/tag/v0.1.0).
 
 | Asset | SHA256 |
 |-------|--------|
 | `CloudScribe-v0.1.0-macos.zip` | `b4900ef216fb5a8f44d354ba31b9c9a545133fe9145bf13ec38bdacf30d07d33` |
 
 ```bash
-shasum -a 256 ~/Downloads/CloudScribe-v0.1.0-macos.zip
-unzip ~/Downloads/CloudScribe-v0.1.0-macos.zip -d /Applications/
+shasum -a 256 -c CloudScribe-v0.1.0-macos.zip.sha256
+unzip CloudScribe-v0.1.0-macos.zip -d /Applications/
 open /Applications/CloudScribe.app
 ```
 
-The app is ad-hoc signed and not notarized. On first launch, right-click the app in Finder → **Open**, or run `xattr -cr /Applications/CloudScribe.app`.
+The app is ad-hoc signed and not notarized. On first launch, right-click the app in Finder → **Open**, or allow it in System Settings → Privacy & Security.
+
+To build current `main` from source (macOS 14+):
+
+```bash
+./Scripts/package_app.sh --release   # builds .build/release/CloudScribe.app
+```
 
 After launching, open **Settings** and save a Deepgram API key. Grant microphone access when prompted.
 
